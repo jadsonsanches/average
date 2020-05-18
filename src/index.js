@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { AuthProvider } from './contexts/auth';
 import Routes from './routes';
 
-export function Index() {
+export default function Index() {
   return (
     <NavigationContainer>
       <AuthProvider>

@@ -13,7 +13,7 @@ export default function RoutesNew() {
       screenOptions={{ headerShown: false }}
     >
       <AuthStack.Screen name="SignIn" component={SignInScreen} />
-      <AuthStack.Screen name="NewUser" component={NewUserScreen} />
+      {/* <AuthStack.Screen name="NewUser" component={NewUserScreen} /> */}
     </AuthStack.Navigator>
   );
 }
