@@ -6,7 +6,6 @@ import AuthContext from "../../contexts/auth";
 import imgUser from '../../assets/img/average-icon.png';
 
 import Button from '../../components/Button';
-import Header from '../../components/Header';
 import Breadcrumb from '../../components/Breadcrumb';
 import styles from './styles';
 
@@ -28,7 +27,6 @@ export default function Setting() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <Container>
-        <Header />
         <Breadcrumb Titulo="Configurações" />
 
         <Body>

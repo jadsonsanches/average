@@ -16,7 +16,6 @@ import AuthContext from "../../contexts/auth";
 import styles from './styles';
 import InputIcon from '../../components/Input';
 import Button from '../../components/Button';
-import Header from '../../components/Header';
 import Breadcrumb from '../../components/Breadcrumb';
 
 import {
@@ -43,7 +42,6 @@ export default function Wallet() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <Container>
-        <Header/>
         <Breadcrumb Titulo="Minhas Carteiras" />
 
         <Body>

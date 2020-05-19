@@ -3,6 +3,8 @@ import { StatusBar } from 'react-native';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+import Header from '../components/Header';
+
 import WalletScreen from '../screens/Wallet';
 import AssetScreen from '../screens/Asset';
 import CalculateScreen from '../screens/Calculate';
@@ -33,6 +35,7 @@ export default function Routes() {
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#1AC079" />
+      <Header/>
       <Tab.Navigator
         // DESSA FUNÇÃO ELA VAI RETORNAR UM OBJETO
         screenOptions={({ route }) => ({

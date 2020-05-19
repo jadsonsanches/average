@@ -22,8 +22,6 @@ import {
 export default function Header() {
   const { user } = useContext(AuthContext);
 
-
-
   return (
     <HeaderGradient colors={['#1AC079', '#19DD89']} start={[0, 0.2]}>
       <Logotipo source={logotipo} />

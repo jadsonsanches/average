@@ -5,7 +5,6 @@ import { Feather } from '@expo/vector-icons';
 import imgAsset from '../../assets/img/average-icon.png';
 
 import InputIcon from '../../components/Input';
-import Header from '../../components/Header';
 import Breadcrumb from '../../components/Breadcrumb';
 import Button from '../../components/Button';
 import styles from './styles';
@@ -39,7 +38,6 @@ export default function Calculate() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <Container>
-        <Header />
         <Breadcrumb Titulo="Calcular Preço Médio" />
 
         <Body>
