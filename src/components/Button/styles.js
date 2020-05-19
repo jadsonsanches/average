@@ -8,7 +8,6 @@ export const BtnPrimary = styled.TouchableOpacity`
   height: 40px;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
 `;
 export const BtnSecondary = styled.TouchableOpacity`
   background-color: ${GlobalStyle.dark_gray};
@@ -16,7 +15,6 @@ export const BtnSecondary = styled.TouchableOpacity`
   height: 40px;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
 `;
 
 export const BtnPrimaryText = styled.Text`

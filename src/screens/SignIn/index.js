@@ -1,8 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Text, View, StatusBar, Alert, AsyncStorage } from 'react-native';
 
-import * as firebase from 'firebase';
-
 import AuthContext from "../../contexts/auth";
 
 import InputIcon from '../../components/Input';
@@ -30,9 +28,6 @@ export default function SignIn({ navigation }) {
   async function handleLogin() {
       login(email, password);
 
-      // await firebase.auth().signInWithEmailAndPassword(email, password);
-      // const currentUser = firebase.auth().currentUser;
-
       // await firebase
       //   .firestore()
       //   .collection('users')
@@ -50,16 +45,6 @@ export default function SignIn({ navigation }) {
       //     });
       //   });
   }
-
-  // async function setUserStorage(user) {
-  //   try {
-  //     await AsyncStorage.setItem(USER_ID, JSON.stringify(user));
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
-
-
 
   return (
     <>

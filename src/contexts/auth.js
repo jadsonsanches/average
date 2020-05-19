@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { StatusBar, BackHandler, Alert } from 'react-native';
+import { AsyncStorage } from 'react-native';
 import * as Font from 'expo-font';
 import * as firebase from 'firebase';
 
@@ -8,6 +9,7 @@ import { firebaseConfig } from '../config/firebaseConfig';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [messageEmail, setMessageEmail] = useState('');
   const [messagePassword, setMessagePassword] = useState('');
@@ -19,6 +21,8 @@ export function AuthProvider({ children }) {
 
       async function useFonts(fontMap) {
         await Font.loadAsync(fontMap);
+        loadStoragedData();
+
         setLoading(false);
         console.log('Fontes foram carregadas!');
       }
@@ -43,6 +47,19 @@ export function AuthProvider({ children }) {
 
     loadFirebase();
   }, []);
+
+  async function loadStoragedData() {
+    setLoading(true);
+    const storagedUser = await AsyncStorage.getItem('@RNAuth:user');
+
+    if (storagedUser) {
+      setUser(JSON.parse(storagedUser));
+    } else {
+      setUser(null);
+    }
+
+    setLoading(false);
+  }
 
   BackHandler.addEventListener('hardwareBackPress', function () {
     BackHandler.exitApp();
@@ -73,11 +90,9 @@ export function AuthProvider({ children }) {
       await firebase.auth().signInWithEmailAndPassword(email, password);
       const currentUser = firebase.auth().currentUser;
 
-      // const res = await signIn();
-      // setUser(res.user);
+      setUser(currentUser);
 
-      // await AsyncStorage.setItem("@RNAuth:user", JSON.stringify(res.user));
-      // await AsyncStorage.setItem("@RNAuth:token", res.token);
+      await AsyncStorage.setItem('@RNAuth:user', JSON.stringify(currentUser));
 
       setLoading(false);
     } catch (error) {
@@ -85,6 +100,12 @@ export function AuthProvider({ children }) {
       setLoading(false);
       handleAuthError(error);
     }
+  }
+
+  // LOGOUT
+  async function signOut() {
+    await AsyncStorage.clear();
+    setUser(null);
   }
 
   // ERRORS
@@ -119,6 +140,12 @@ export function AuthProvider({ children }) {
             'Usuário encontra-se desabilitado, por favor entre em contato conosco.',
           );
           break;
+        case 'auth/too-many-requests':
+          Alert.alert(
+            'Tente novamente',
+            'Tentativas de login sem exito, por favor tente novamente mais tarde.',
+          );
+          break;
       }
     }
   };
@@ -126,7 +153,16 @@ export function AuthProvider({ children }) {
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#333" />
-      <AuthContext.Provider value={{ loading, messageEmail, messagePassword, login }}>
+      <AuthContext.Provider
+        value={{
+          signed: !!user,
+          loading,
+          messageEmail,
+          messagePassword,
+          login,
+          signOut
+        }}
+      >
         {children}
       </AuthContext.Provider>
     </>
