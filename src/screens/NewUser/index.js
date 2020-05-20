@@ -59,7 +59,9 @@ export default function NewUser({ navigation }) {
       }
 
       setLoading(true);
-      const userAuth = await firebase.auth().createUserWithEmailAndPassword(email, password);
+      const userAuth = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password);
 
       const user = await firebase.firestore().collection('users').add({
         avatar_url: '',

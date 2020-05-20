@@ -1,13 +1,12 @@
-import React, { useState, useContext } from 'react';
-import { View } from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { View, ActivityIndicator } from 'react-native';
 
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 import 'firebase/storage';
 
-import AuthContext from "../../contexts/auth";
+import AuthContext from '../../contexts/auth';
 
-import imgUser from '../../assets/img/average-icon.png';
 import logotipo from '../../assets/img/logotipo.png';
 
 import {
@@ -20,7 +19,7 @@ import {
 } from './styles';
 
 export default function Header() {
-  const { user } = useContext(AuthContext);
+  const { userAccount } = useContext(AuthContext);
 
   return (
     <HeaderGradient colors={['#1AC079', '#19DD89']} start={[0, 0.2]}>
@@ -28,9 +27,9 @@ export default function Header() {
       <ViewRight>
         <View>
           <LblValorTotal>Valor Total</LblValorTotal>
-          <TxtValorTotal>R$ 5.000,00</TxtValorTotal>
+          <TxtValorTotal>R$ {userAccount.total}</TxtValorTotal>
         </View>
-        <ImgUser source={imgUser} />
+        <ImgUser source={{uri: userAccount.avatar_url}} />
       </ViewRight>
     </HeaderGradient>
   );

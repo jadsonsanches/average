@@ -35,8 +35,7 @@ import {
 } from './styles';
 
 export default function Wallet() {
-  const { user, loading } = useContext(AuthContext);
-
+  const { userAuth, loading } = useContext(AuthContext);
   const [modalVisible, setModalVisible] = useState(false);
 
   return (

@@ -9,7 +9,8 @@ import { firebaseConfig } from '../config/firebaseConfig';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [userAuth, setUserAuth] = useState(null);
+  const [userAccount, setUserAccount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [messageEmail, setMessageEmail] = useState('');
   const [messagePassword, setMessagePassword] = useState('');
@@ -22,8 +23,6 @@ export function AuthProvider({ children }) {
       async function useFonts(fontMap) {
         await Font.loadAsync(fontMap);
         loadStoragedData();
-
-        setLoading(false);
         console.log('Fontes foram carregadas!');
       }
 
@@ -48,19 +47,21 @@ export function AuthProvider({ children }) {
     loadFirebase();
   }, []);
 
+  // CARREGA DADOS DO STORAGED
   async function loadStoragedData() {
     setLoading(true);
-    const storagedUser = await AsyncStorage.getItem('@RNAuth:user');
+    const storagedUser = await AsyncStorage.getItem('@RNAuth:userAuth');
 
     if (storagedUser) {
-      setUser(JSON.parse(storagedUser));
+      getUser(JSON.parse(storagedUser));
+      setUserAuth(JSON.parse(storagedUser));
     } else {
-      setUser(null);
+      setUserAuth(null);
+      setLoading(false);
     }
-
-    setLoading(false);
   }
 
+  // FUNÇÃO PARA QUANDO CLICAR EM VOLTAR
   BackHandler.addEventListener('hardwareBackPress', function () {
     BackHandler.exitApp();
   });
@@ -90,11 +91,14 @@ export function AuthProvider({ children }) {
       await firebase.auth().signInWithEmailAndPassword(email, password);
       const currentUser = firebase.auth().currentUser;
 
-      setUser(currentUser);
+      setUserAuth(currentUser);
 
-      await AsyncStorage.setItem('@RNAuth:user', JSON.stringify(currentUser));
+      await AsyncStorage.setItem(
+        '@RNAuth:userAuth',
+        JSON.stringify(currentUser),
+      );
 
-      setLoading(false);
+      getUser(currentUser);
     } catch (error) {
       console.log(`CODE: ${error.code} | MESSAGE: ${error.message}`);
       setLoading(false);
@@ -105,7 +109,37 @@ export function AuthProvider({ children }) {
   // LOGOUT
   async function signOut() {
     await AsyncStorage.clear();
-    setUser(null);
+    setUserAuth(null);
+  }
+
+  // CARREGA OS DADOS DO USUARIO
+  async function getUser(storagedUser) {
+    try {
+      setLoading(true);
+
+      await firebase
+        .firestore()
+        .collection('users')
+        .where('user_id', '==', storagedUser.uid)
+        .get()
+
+        .then(res => {
+          if (res.empty) {
+            console.log('NO MATCHING DOCUMENTS');
+          }
+
+          res.forEach(doc => {
+            setUserAccount(doc.data());
+          });
+        })
+        .catch(error => {
+          console.log(`CODE: ${error.code} | MESSAGE: ${error.message}`);
+        });
+
+      setLoading(false);
+    } catch (error) {
+      console.log(`CODE: ${error.code} | MESSAGE: ${error.message}`);
+    }
   }
 
   // ERRORS
@@ -155,12 +189,14 @@ export function AuthProvider({ children }) {
       <StatusBar barStyle="light-content" backgroundColor="#333" />
       <AuthContext.Provider
         value={{
-          signed: !!user,
+          signed: !!userAuth,
+          userAuth,
+          userAccount,
           loading,
           messageEmail,
           messagePassword,
           login,
-          signOut
+          signOut,
         }}
       >
         {children}

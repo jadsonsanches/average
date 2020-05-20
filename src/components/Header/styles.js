@@ -19,11 +19,13 @@ export const LblValorTotal = styled.Text`
   color: ${GlobalStyle.white};
   font-size: 15px;
   font-family: 'ABeeZee-Italic';
+  text-align: right;
 `;
 export const TxtValorTotal = styled.Text`
   color: ${GlobalStyle.white};
   font-weight: bold;
   font-size: 15px;
+  text-align: right;
 `;
 export const ImgUser = styled.Image`
   width: 60px;
