@@ -10,6 +10,9 @@ export default StyleSheet.create({
   },
 });
 
+export const Space10 = styled.View`
+  height: 10px;
+`;
 export const Container = styled.View`
   flex: 1;
   background-color: #f5f5f5;
@@ -31,9 +34,9 @@ export const BodyHeader = styled.View`
   align-items: center;
 `;
 export const ImgUser = styled.Image`
-  width: 80px;
-  height: 80px;
-  border-radius: 40px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50px;
 `;
 export const Group = styled.View`
   border-color: ${GlobalStyle.gray};
@@ -63,4 +66,28 @@ export const Valor = styled.Text`
   font-family: 'ABeeZee-Italic';
   font-size: 17px;
   color: ${GlobalStyle.gray};
+`;
+export const HeaderModal = styled.View`
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  background-color: ${GlobalStyle.white};
+  border-color: ${GlobalStyle.gray};
+  border-width: 1px;
+`;
+export const BtnBack = styled.TouchableOpacity`
+  height: 60px;
+  width: 50px;
+  position: absolute;
+  left: 15px;
+  align-items: center;
+  justify-content: center;
+`;
+export const TitleModal = styled.Text`
+  color: ${GlobalStyle.dark_gray};
+  font-size: 17px;
+  margin: 0 65px;
+  text-align: center;
+  font-family: 'ABeeZee-Italic';
+  text-shadow: 0px 0px 1px ${GlobalStyle.dark_gray};
 `;

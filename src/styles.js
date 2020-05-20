@@ -7,5 +7,6 @@ export default {
   gray: '#ddd',
   light_gray: '#eee',
   dark_gray: '#999',
-  danger: '#F02311',
+  danger: '#FF6456',
+  dark_danger: '#D93D30'
 };

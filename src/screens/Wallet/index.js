@@ -1,22 +1,16 @@
-import React, { useState, useEffect, useContext } from 'react';
-import {
-  FlatList,
-  Modal,
-  SafeAreaView,
-  AsyncStorage,
-  Alert,
-} from 'react-native';
+import React, { useState, useContext } from 'react';
+import { FlatList, Modal, SafeAreaView } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 
-import AuthContext from "../../contexts/auth";
+import AuthContext from '../../contexts/auth';
 
-import styles from './styles';
 import InputIcon from '../../components/Input';
 import Button from '../../components/Button';
 import Breadcrumb from '../../components/Breadcrumb';
+import styles from './styles';
 
 import {
   Container,
@@ -35,7 +29,7 @@ import {
 } from './styles';
 
 export default function Wallet() {
-  const { userAuth, loading } = useContext(AuthContext);
+  const { userAccount } = useContext(AuthContext);
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
