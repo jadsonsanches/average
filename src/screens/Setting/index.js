@@ -119,7 +119,8 @@ export default function Setting() {
     ref
       .getDownloadURL()
       .then(function (urlPhoto) {
-        setPhotoUserAccount((urlPhoto).toString());
+        console.log(urlPhoto)
+        setPhotoUserAccount(urlPhoto);
       })
       .catch(error =>
         console.log(`CODE: ${error.code} | MESSAGE: ${error.message}`),
