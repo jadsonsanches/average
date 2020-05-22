@@ -63,14 +63,29 @@ export default function NewUser({ navigation }) {
         .auth()
         .createUserWithEmailAndPassword(email, password);
 
-      const user = await firebase.firestore().collection('users').add({
+      // const user = await firebase.firestore().collection('users').add({
+      //   avatar_url: '',
+      //   email: email,
+      //   name: name,
+      //   total: '0,00',
+      //   whatsapp: '',
+      //   user_id: userAuth.user.uid,
+      // });
+
+      let data = {
         avatar_url: '',
-        email: email,
+        email: email.toLowerCase(),
         name: name,
         total: '0,00',
         whatsapp: '',
         user_id: userAuth.user.uid,
-      });
+      };
+
+      await firebase
+        .firestore()
+        .collection('users')
+        .doc(userAuth.user.uid)
+        .set(data);
 
       setLoading(false);
 

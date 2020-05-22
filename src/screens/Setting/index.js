@@ -1,6 +1,21 @@
-import React, { useContext, useState } from 'react';
-import { SafeAreaView, ScrollView, Modal } from 'react-native';
+import React, { useContext, useState, useEffect } from 'react';
+import {
+  SafeAreaView,
+  ScrollView,
+  Modal,
+  Alert,
+  View,
+  ActivityIndicator,
+} from 'react-native';
 import { Feather } from '@expo/vector-icons';
+
+import * as ImagePicker from 'expo-image-picker';
+import Constants from 'expo-constants';
+import * as Permissions from 'expo-permissions';
+
+import * as firebase from 'firebase';
+import 'firebase/firestore';
+import 'firebase/storage';
 
 import AuthContext from '../../contexts/auth';
 
@@ -14,6 +29,7 @@ import {
   Body,
   CardBody,
   BodyHeader,
+  ButtonFoto,
   ImgUser,
   Group,
   LastGroup,
@@ -27,7 +43,103 @@ import {
 
 export default function Setting() {
   const { userAccount, signOut } = useContext(AuthContext);
+
+  const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [photoUserAccount, setPhotoUserAccount] = useState('');
+
+  // PERMISSÃO EM IOS
+  useEffect(() => {
+    async function getPermissionAsync() {
+      if (Constants.platform.ios) {
+        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        if (status !== 'granted') {
+          alert('Desculpa, nós precisamos da permissão para acessar a camera!');
+        }
+      }
+    }
+
+    getPermissionAsync();
+  }, []);
+
+  // ALERT SE DESEJA INSERIR UMA NOVA FOTO OU NAO
+  function handleImg() {
+    Alert.alert('Inserir foto', 'Deseja inserir uma nova foto?', [
+      {
+        text: 'Não',
+        onPress: () => {},
+      },
+      {
+        text: 'Sim',
+        onPress: () => handlePickImage(),
+      },
+    ]);
+  }
+
+  // AQUI ONDE ABRE A GALERIA DO CELULAR PARA O USUÁRIO ESCOLHER A FOTO
+  async function handlePickImage() {
+    try {
+      const data = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 4],
+        quality: 0.6,
+      });
+
+      if (!data.cancelled) {
+        setLoading(true);
+
+        handleUploadImgStorage(data.uri)
+          .then(() => {
+            setLoading(false);
+            Alert.alert('Sucesso', 'Foto atualizada com sucesso!');
+          })
+          .catch(error => {
+            setLoading(false);
+            Alert.alert(error);
+          });
+
+        handleUpdateImgUserAccount();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // INSERE A FOTO NA PASTA imgUsers DENTRO DO STORAGE DO FIREBASE
+  async function handleUploadImgStorage(uri) {
+    const res = await fetch(uri);
+    const blob = await res.blob();
+
+    let ref = firebase
+      .storage()
+      .ref()
+      .child('imgUsers/' + userAccount.user_id);
+
+    ref
+      .getDownloadURL()
+      .then(function (urlPhoto) {
+        setPhotoUserAccount((urlPhoto).toString());
+      })
+      .catch(error =>
+        console.log(`CODE: ${error.code} | MESSAGE: ${error.message}`),
+      );
+
+    return ref.put(blob);
+  }
+
+  // INSERE A FOTO NO CAMPO AVATAR DO USER ACCOUNT
+  async function handleUpdateImgUserAccount() {
+    const ref = await firebase
+      .firestore()
+      .collection('users')
+      .doc(userAccount.user_id)
+      .update({ avatar_url: photoUserAccount });
+  }
+
+  if (loading) {
+    return <ActivityIndicator size="large" />;
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -38,7 +150,9 @@ export default function Setting() {
           <ScrollView>
             <CardBody>
               <BodyHeader>
-                <ImgUser source={{ uri: userAccount.avatar_url }} />
+                <ButtonFoto onPress={() => handleImg()}>
+                  <ImgUser source={{ uri: userAccount.avatar_url }} />
+                </ButtonFoto>
               </BodyHeader>
 
               <Group>
@@ -53,14 +167,6 @@ export default function Setting() {
                 <Description>WhatsApp</Description>
                 <Valor>{userAccount.whatsapp}</Valor>
               </LastGroup>
-              {/* <LastGroup>
-                <Description>Senha</Description>
-                <Button
-                  labelButton={'MUDAR SENHA'}
-                  type={'MiniPrimary'}
-                  onPress={() => {}}
-                />
-              </LastGroup> */}
             </CardBody>
           </ScrollView>
           <Button

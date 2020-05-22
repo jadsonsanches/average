@@ -33,6 +33,9 @@ export const BodyHeader = styled.View`
   margin: 20px 0 30px;
   align-items: center;
 `;
+export const ButtonFoto = styled.TouchableOpacity`
+
+`
 export const ImgUser = styled.Image`
   width: 100px;
   height: 100px;

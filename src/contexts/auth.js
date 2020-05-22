@@ -122,7 +122,6 @@ export function AuthProvider({ children }) {
         .collection('users')
         .where('user_id', '==', storagedUser.uid)
         .get()
-
         .then(res => {
           if (res.empty) {
             console.log('NO MATCHING DOCUMENTS');
