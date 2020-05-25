@@ -73,20 +73,6 @@ export function AuthProvider({ children }) {
     loadFirebase();
   }, []);
 
-  // // CARREGA DADOS DO STORAGED
-  // async function loadStoragedData() {
-  //   setLoading(true);
-  //   const storagedUser = await AsyncStorage.getItem('@RNAuth:userAuth');
-
-  //   if (storagedUser) {
-  //     getUser(JSON.parse(storagedUser));
-  //     setUserAuth(JSON.parse(storagedUser));
-  //   } else {
-  //     setUserAuth(null);
-  //     setLoading(false);
-  //   }
-  // }
-
   // FUNÇÃO PARA QUANDO CLICAR EM VOLTAR
   BackHandler.addEventListener('hardwareBackPress', function () {
     BackHandler.exitApp();

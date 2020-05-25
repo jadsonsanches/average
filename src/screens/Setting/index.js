@@ -41,21 +41,26 @@ import {
 
 export default function Setting() {
   const { userAccount, signOut } = useContext(AuthContext);
-  const { photoUserAccount, handleImg, loading } = useContext(PhotoUserContext);
+  const {
+    photoUserAccount,
+    handleImg,
+    handleBtnSalvar,
+    loading,
+    name,
+    setName,
+    whatsapp,
+    setWhatsapp,
+    messageName,
+    setMessageName,
+  } = useContext(PhotoUserContext);
 
   const [modalVisible, setModalVisible] = useState(false);
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [whatsapp, setWhatsapp] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordConfirm, setPasswordConfirm] = useState('');
-
-  const [messageName, setMessageName] = useState('');
-  const [messageEmail, setMessageEmail] = useState('');
-  const [messageWhatsapp, setMessageWhatsapp] = useState('');
-  const [messagePassword, setMessagePassword] = useState('');
-  const [messagePasswordConfirm, setMessagePasswordConfirm] = useState('');
+  useEffect(() => {
+    if (modalVisible == true) {
+      setMessageName('');
+    }
+  }, [modalVisible]);
 
   // PERMISSÃO EM IOS
   useEffect(() => {
@@ -70,6 +75,13 @@ export default function Setting() {
 
     getPermissionAsync();
   }, []);
+
+  // CLOSE MODAL
+  function closeModal() {
+    setModalVisible(!modalVisible);
+    setName(userAccount.name);
+    setWhatsapp(userAccount.whatsapp);
+  }
 
   if (loading) {
     return (
@@ -97,7 +109,7 @@ export default function Setting() {
 
               <Group>
                 <Description>Nome</Description>
-                <Valor>{userAccount.name}</Valor>
+                <Valor>{name}</Valor>
               </Group>
               <Group>
                 <Description>E-mail</Description>
@@ -105,7 +117,7 @@ export default function Setting() {
               </Group>
               <LastGroup>
                 <Description>WhatsApp</Description>
-                <Valor>{userAccount.whatsapp}</Valor>
+                <Valor>{whatsapp}</Valor>
               </LastGroup>
             </CardBody>
           </ScrollView>
@@ -126,16 +138,10 @@ export default function Setting() {
           animationType="slide"
           transparent={false}
           visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}
+          onRequestClose={() => closeModal()}
         >
           <HeaderModal>
-            <BtnBack
-              onPress={() => {
-                setModalVisible(!modalVisible);
-              }}
-            >
+            <BtnBack onPress={() => closeModal()}>
               <Feather name="arrow-left-circle" size={25} color="#19DD89" />
             </BtnBack>
             <TitleModal>CADASTRAR NOVA CARTEIRA</TitleModal>
@@ -152,6 +158,7 @@ export default function Setting() {
                 </ButtonFoto>
               </BodyHeader>
               <InputIcon
+                label={'Nome'}
                 nameIcon={'user'}
                 colorIcon={'#19DD89'}
                 placeholderInput={'Informe seu nome'}
@@ -161,53 +168,24 @@ export default function Setting() {
                 message={messageName}
               />
               <InputIcon
-                nameIcon={'at-sign'}
-                colorIcon={'#19DD89'}
-                placeholderInput={'Informe seu email'}
-                keyboardType={'email-address'}
-                selectionColor={'#19DD89'}
-                secureTextEntry={false}
-                value={email}
-                onChangeText={email => setEmail(email)}
-                message={messageEmail}
-              />
-              <InputIcon
+                label={'WhatsApp'}
                 nameIcon={'phone'}
                 colorIcon={'#19DD89'}
-                placeholderInput={'Informe seu WhatsApp'}
+                placeholderInput={'(00) 90000.0000'}
                 keyboardType={'phone-pad'}
                 selectionColor={'#19DD89'}
                 secureTextEntry={false}
                 value={whatsapp}
                 onChangeText={whatsapp => setWhatsapp(whatsapp)}
-                message={messageWhatsapp}
-              />
-              <InputIcon
-                nameIcon={'lock'}
-                colorIcon={'#19DD89'}
-                placeholderInput={'Senha'}
-                keyboardType={'default'}
-                selectionColor={'#19DD89'}
-                secureTextEntry={true}
-                value={password}
-                onChangeText={password => setPassword(password)}
-                message={messagePassword}
-              />
-              <InputIcon
-                nameIcon={'lock'}
-                colorIcon={'#19DD89'}
-                placeholderInput={'Repetir Senha'}
-                keyboardType={'default'}
-                selectionColor={'#19DD89'}
-                secureTextEntry={true}
-                value={passwordConfirm}
-                onChangeText={passwordConfirm =>
-                  setPasswordConfirm(passwordConfirm)
-                }
-                message={messagePasswordConfirm}
+                maxLength={11}
+                message={''}
               />
 
-              <Button labelButton={'SALVAR'} type={'Primary'} />
+              <Button
+                labelButton={'SALVAR'}
+                type={'Primary'}
+                onPress={() => handleBtnSalvar()}
+              />
             </Body>
           </Container>
         </Modal>

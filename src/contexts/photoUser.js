@@ -17,15 +17,36 @@ export function PhotoUserProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [photoUserAccount, setPhotoUserAccount] = useState(null);
 
+  const [name, setName] = useState('');
+  const [whatsapp, setWhatsapp] = useState('');
+
+  const [messageName, setMessageName] = useState('');
+
   useEffect(() => {
     if (userAccount) {
+      clearInputs();
+
       if (userAccount.avatar_url !== '') {
         setPhotoUserAccount(userAccount.avatar_url);
-      } else {
-        setPhotoUserAccount(null);
       }
+      setName(userAccount.name);
+      setWhatsapp(userAccount.whatsapp);
     }
   }, [userAccount]);
+
+  // useEffect(() => {
+  //   if (whatsapp !== '') {
+  //     //text = `(${whatsapp.substr(0, 2)}) ${whatsapp.substr(2,5)}.${whatsapp.substr(7,4)}`;
+  //     console.log(whatsapp);
+  //   }
+  // }, [whatsapp]);
+
+  // LIMPA OS INPUTS
+  function clearInputs() {
+    setPhotoUserAccount(null);
+    setName('');
+    setWhatsapp('');
+  }
 
   // // ALERT SE DESEJA INSERIR UMA NOVA FOTO OU NAO
   function handleImg() {
@@ -101,13 +122,41 @@ export function PhotoUserProvider({ children }) {
     setPhotoUserAccount(urlPhoto);
   }
 
+  async function handleBtnSalvar() {
+    if (name === '') {
+      setMessageName('Nome é obrirgatório');
+      return;
+    }
+
+    await firebase
+      .firestore()
+      .collection('users')
+      .doc(userAccount.user_id)
+      .update({
+        name: name,
+        whatsapp: whatsapp,
+      })
+      .then(() => {
+        userAccount.name = name;
+        userAccount.whatsapp = whatsapp;
+        Alert.alert('Sucesso', 'Informações foram alteradas com sucesso!');
+      });
+  }
+
   return (
     <>
       <PhotoUserContext.Provider
         value={{
           photoUserAccount,
           loading,
+          name,
+          setName,
+          whatsapp,
+          setWhatsapp,
+          messageName,
+          setMessageName,
           handleImg,
+          handleBtnSalvar,
         }}
       >
         {children}
