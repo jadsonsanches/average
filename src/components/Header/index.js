@@ -1,12 +1,10 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { View, ActivityIndicator } from 'react-native';
-
-import * as firebase from 'firebase';
-import 'firebase/firestore';
-import 'firebase/storage';
+import React, { useContext } from 'react';
+import { View, SafeAreaView } from 'react-native';
 
 import AuthContext from '../../contexts/auth';
+import PhotoUserContext from '../../contexts/photoUser';
 
+import imgUser from '../../assets/img/average-icon.png';
 import logotipo from '../../assets/img/logotipo.png';
 
 import {
@@ -20,17 +18,24 @@ import {
 
 export default function Header() {
   const { userAccount } = useContext(AuthContext);
+  const { photoUserAccount } = useContext(PhotoUserContext);
 
   return (
-    <HeaderGradient colors={['#1AC079', '#19DD89']} start={[0, 0.2]}>
-      <Logotipo source={logotipo} />
-      <ViewRight>
-        <View>
-          <LblValorTotal>Valor Total</LblValorTotal>
-          <TxtValorTotal>R$ {userAccount.total}</TxtValorTotal>
-        </View>
-        <ImgUser source={{uri: userAccount.avatar_url}} />
-      </ViewRight>
-    </HeaderGradient>
+    <SafeAreaView style={{ backgroundColor: '#1AC079' }}>
+      <HeaderGradient colors={['#1AC079', '#19DD89']} start={[0, 0.2]}>
+        <Logotipo source={logotipo} />
+        <ViewRight>
+          <View>
+            <LblValorTotal>Valor Total</LblValorTotal>
+            <TxtValorTotal>R$ {userAccount.total}</TxtValorTotal>
+          </View>
+          {photoUserAccount !== null ? (
+            <ImgUser source={{ uri: photoUserAccount }} />
+          ) : (
+            <ImgUser source={imgUser} />
+          )}
+        </ViewRight>
+      </HeaderGradient>
+    </SafeAreaView>
   );
 }

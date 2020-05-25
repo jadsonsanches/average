@@ -1,28 +1,39 @@
 import React, { createContext, useEffect, useState } from 'react';
-import { StatusBar, BackHandler, Alert } from 'react-native';
+import { StatusBar, BackHandler, Alert, YellowBox } from 'react-native';
 import { AsyncStorage } from 'react-native';
 import * as Font from 'expo-font';
+
 import * as firebase from 'firebase';
+import 'firebase/firestore';
+import 'firebase/storage';
 
 import { firebaseConfig } from '../config/firebaseConfig';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
+  YellowBox.ignoreWarnings(['Setting a timer']);
+
   const [userAuth, setUserAuth] = useState(null);
   const [userAccount, setUserAccount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [messageEmail, setMessageEmail] = useState('');
   const [messagePassword, setMessagePassword] = useState('');
 
-  // CARREGA AS FONTES
   useEffect(() => {
+    if (userAuth) {
+      getUser();
+    }
+  }, [userAuth]);
+
+  useEffect(() => {
+    // CARREGA AS FONTES
     function loadFonts() {
       setLoading(true);
 
       async function useFonts(fontMap) {
         await Font.loadAsync(fontMap);
-        loadStoragedData();
+        //loadStoragedData();
         console.log('Fontes foram carregadas!');
       }
 
@@ -32,7 +43,22 @@ export function AuthProvider({ children }) {
       });
     }
 
+    // CARREGA DADOS DO STORAGED
+    async function loadStoragedData() {
+      setLoading(true);
+      const storagedUser = await AsyncStorage.getItem('@RNAuth:userAuth');
+
+      if (storagedUser) {
+        //getUser(JSON.parse(storagedUser));
+        setUserAuth(JSON.parse(storagedUser));
+      } else {
+        setUserAuth(null);
+        setLoading(false);
+      }
+    }
+
     loadFonts();
+    loadStoragedData();
   }, []);
 
   // CARREGA O FIREBASE
@@ -47,19 +73,19 @@ export function AuthProvider({ children }) {
     loadFirebase();
   }, []);
 
-  // CARREGA DADOS DO STORAGED
-  async function loadStoragedData() {
-    setLoading(true);
-    const storagedUser = await AsyncStorage.getItem('@RNAuth:userAuth');
+  // // CARREGA DADOS DO STORAGED
+  // async function loadStoragedData() {
+  //   setLoading(true);
+  //   const storagedUser = await AsyncStorage.getItem('@RNAuth:userAuth');
 
-    if (storagedUser) {
-      getUser(JSON.parse(storagedUser));
-      setUserAuth(JSON.parse(storagedUser));
-    } else {
-      setUserAuth(null);
-      setLoading(false);
-    }
-  }
+  //   if (storagedUser) {
+  //     getUser(JSON.parse(storagedUser));
+  //     setUserAuth(JSON.parse(storagedUser));
+  //   } else {
+  //     setUserAuth(null);
+  //     setLoading(false);
+  //   }
+  // }
 
   // FUNÇÃO PARA QUANDO CLICAR EM VOLTAR
   BackHandler.addEventListener('hardwareBackPress', function () {
@@ -98,7 +124,7 @@ export function AuthProvider({ children }) {
         JSON.stringify(currentUser),
       );
 
-      getUser(currentUser);
+      //getUser(currentUser);
     } catch (error) {
       console.log(`CODE: ${error.code} | MESSAGE: ${error.message}`);
       setLoading(false);
@@ -113,26 +139,17 @@ export function AuthProvider({ children }) {
   }
 
   // CARREGA OS DADOS DO USUARIO
-  async function getUser(storagedUser) {
+  async function getUser() {
     try {
       setLoading(true);
 
       await firebase
         .firestore()
         .collection('users')
-        .where('user_id', '==', storagedUser.uid)
+        .doc(userAuth.uid)
         .get()
         .then(res => {
-          if (res.empty) {
-            console.log('NO MATCHING DOCUMENTS');
-          }
-
-          res.forEach(doc => {
-            setUserAccount(doc.data());
-          });
-        })
-        .catch(error => {
-          console.log(`CODE: ${error.code} | MESSAGE: ${error.message}`);
+          setUserAccount(res.data());
         });
 
       setLoading(false);

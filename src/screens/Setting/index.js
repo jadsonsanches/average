@@ -3,7 +3,6 @@ import {
   SafeAreaView,
   ScrollView,
   Modal,
-  Alert,
   View,
   ActivityIndicator,
 } from 'react-native';
@@ -13,11 +12,10 @@ import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 
-import * as firebase from 'firebase';
-import 'firebase/firestore';
-import 'firebase/storage';
-
 import AuthContext from '../../contexts/auth';
+import PhotoUserContext from '../../contexts/photoUser';
+
+import imgUser from '../../assets/img/average-icon.png';
 
 import InputIcon from '../../components/Input';
 import Button from '../../components/Button';
@@ -43,10 +41,9 @@ import {
 
 export default function Setting() {
   const { userAccount, signOut } = useContext(AuthContext);
+  const { photoUserAccount, handleImg, loading } = useContext(PhotoUserContext);
 
-  const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [photoUserAccount, setPhotoUserAccount] = useState('');
 
   // PERMISSÃO EM IOS
   useEffect(() => {
@@ -62,84 +59,12 @@ export default function Setting() {
     getPermissionAsync();
   }, []);
 
-  // ALERT SE DESEJA INSERIR UMA NOVA FOTO OU NAO
-  function handleImg() {
-    Alert.alert('Inserir foto', 'Deseja inserir uma nova foto?', [
-      {
-        text: 'Não',
-        onPress: () => {},
-      },
-      {
-        text: 'Sim',
-        onPress: () => handlePickImage(),
-      },
-    ]);
-  }
-
-  // AQUI ONDE ABRE A GALERIA DO CELULAR PARA O USUÁRIO ESCOLHER A FOTO
-  async function handlePickImage() {
-    try {
-      const data = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 4],
-        quality: 0.6,
-      });
-
-      if (!data.cancelled) {
-        setLoading(true);
-
-        handleUploadImgStorage(data.uri)
-          .then(() => {
-            setLoading(false);
-            Alert.alert('Sucesso', 'Foto atualizada com sucesso!');
-          })
-          .catch(error => {
-            setLoading(false);
-            Alert.alert(error);
-          });
-
-        handleUpdateImgUserAccount();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  // INSERE A FOTO NA PASTA imgUsers DENTRO DO STORAGE DO FIREBASE
-  async function handleUploadImgStorage(uri) {
-    const res = await fetch(uri);
-    const blob = await res.blob();
-
-    let ref = firebase
-      .storage()
-      .ref()
-      .child('imgUsers/' + userAccount.user_id);
-
-    ref
-      .getDownloadURL()
-      .then(function (urlPhoto) {
-        console.log(urlPhoto)
-        setPhotoUserAccount(urlPhoto);
-      })
-      .catch(error =>
-        console.log(`CODE: ${error.code} | MESSAGE: ${error.message}`),
-      );
-
-    return ref.put(blob);
-  }
-
-  // INSERE A FOTO NO CAMPO AVATAR DO USER ACCOUNT
-  async function handleUpdateImgUserAccount() {
-    const ref = await firebase
-      .firestore()
-      .collection('users')
-      .doc(userAccount.user_id)
-      .update({ avatar_url: photoUserAccount });
-  }
-
   if (loading) {
-    return <ActivityIndicator size="large" />;
+    return (
+      <View>
+        <ActivityIndicator size="large" />;
+      </View>
+    );
   }
 
   return (
@@ -152,7 +77,11 @@ export default function Setting() {
             <CardBody>
               <BodyHeader>
                 <ButtonFoto onPress={() => handleImg()}>
-                  <ImgUser source={{ uri: userAccount.avatar_url }} />
+                  {photoUserAccount !== null ? (
+                    <ImgUser source={{ uri: photoUserAccount }} />
+                  ) : (
+                    <ImgUser source={imgUser} />
+                  )}
                 </ButtonFoto>
               </BodyHeader>
 
