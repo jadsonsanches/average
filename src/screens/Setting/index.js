@@ -45,6 +45,18 @@ export default function Setting() {
 
   const [modalVisible, setModalVisible] = useState(false);
 
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [whatsapp, setWhatsapp] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState('');
+
+  const [messageName, setMessageName] = useState('');
+  const [messageEmail, setMessageEmail] = useState('');
+  const [messageWhatsapp, setMessageWhatsapp] = useState('');
+  const [messagePassword, setMessagePassword] = useState('');
+  const [messagePasswordConfirm, setMessagePasswordConfirm] = useState('');
+
   // PERMISSÃO EM IOS
   useEffect(() => {
     async function getPermissionAsync() {
@@ -76,13 +88,11 @@ export default function Setting() {
           <ScrollView>
             <CardBody>
               <BodyHeader>
-                <ButtonFoto onPress={() => handleImg()}>
-                  {photoUserAccount !== null ? (
-                    <ImgUser source={{ uri: photoUserAccount }} />
-                  ) : (
-                    <ImgUser source={imgUser} />
-                  )}
-                </ButtonFoto>
+                {photoUserAccount !== null ? (
+                  <ImgUser source={{ uri: photoUserAccount }} />
+                ) : (
+                  <ImgUser source={imgUser} />
+                )}
               </BodyHeader>
 
               <Group>
@@ -132,12 +142,69 @@ export default function Setting() {
           </HeaderModal>
           <Container>
             <Body style={styles.modal}>
+              <BodyHeader>
+                <ButtonFoto onPress={() => handleImg()}>
+                  {photoUserAccount !== null ? (
+                    <ImgUser source={{ uri: photoUserAccount }} />
+                  ) : (
+                    <ImgUser source={imgUser} />
+                  )}
+                </ButtonFoto>
+              </BodyHeader>
               <InputIcon
-                label={'Nome:'}
                 nameIcon={'user'}
                 colorIcon={'#19DD89'}
-                placeholderInput={'Informe um nome para a carteira'}
+                placeholderInput={'Informe seu nome'}
                 selectionColor={'#19DD89'}
+                value={name}
+                onChangeText={name => setName(name)}
+                message={messageName}
+              />
+              <InputIcon
+                nameIcon={'at-sign'}
+                colorIcon={'#19DD89'}
+                placeholderInput={'Informe seu email'}
+                keyboardType={'email-address'}
+                selectionColor={'#19DD89'}
+                secureTextEntry={false}
+                value={email}
+                onChangeText={email => setEmail(email)}
+                message={messageEmail}
+              />
+              <InputIcon
+                nameIcon={'phone'}
+                colorIcon={'#19DD89'}
+                placeholderInput={'Informe seu WhatsApp'}
+                keyboardType={'phone-pad'}
+                selectionColor={'#19DD89'}
+                secureTextEntry={false}
+                value={whatsapp}
+                onChangeText={whatsapp => setWhatsapp(whatsapp)}
+                message={messageWhatsapp}
+              />
+              <InputIcon
+                nameIcon={'lock'}
+                colorIcon={'#19DD89'}
+                placeholderInput={'Senha'}
+                keyboardType={'default'}
+                selectionColor={'#19DD89'}
+                secureTextEntry={true}
+                value={password}
+                onChangeText={password => setPassword(password)}
+                message={messagePassword}
+              />
+              <InputIcon
+                nameIcon={'lock'}
+                colorIcon={'#19DD89'}
+                placeholderInput={'Repetir Senha'}
+                keyboardType={'default'}
+                selectionColor={'#19DD89'}
+                secureTextEntry={true}
+                value={passwordConfirm}
+                onChangeText={passwordConfirm =>
+                  setPasswordConfirm(passwordConfirm)
+                }
+                message={messagePasswordConfirm}
               />
 
               <Button labelButton={'SALVAR'} type={'Primary'} />

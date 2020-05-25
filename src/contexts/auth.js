@@ -133,7 +133,24 @@ export function AuthProvider({ children }) {
   }
 
   // LOGOUT
-  async function signOut() {
+  function signOut() {
+    Alert.alert('Deslogar', 'Deseja realmente deslogar da conta?', [
+      {
+        text: 'Não',
+        onPress: () => {
+          return;
+        },
+      },
+      {
+        text: 'Sim',
+        onPress: () => {
+          logOut();
+        },
+      },
+    ]);
+  }
+
+  async function logOut() {
     await AsyncStorage.clear();
     setUserAuth(null);
   }

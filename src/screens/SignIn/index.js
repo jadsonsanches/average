@@ -57,7 +57,7 @@ export default function SignIn({ navigation }) {
           </Header>
 
           <InputIcon
-            nameIcon={'send'}
+            nameIcon={'at-sign'}
             colorIcon={'#19DD89'}
             placeholderInput={'Email'}
             keyboardType={'email-address'}
