@@ -76,7 +76,7 @@ export const HeaderModal = styled.View`
   justify-content: center;
   background-color: ${GlobalStyle.white};
   border-color: ${GlobalStyle.gray};
-  border-width: 1px;
+  border-bottom-width: 1px;
 `;
 export const BtnBack = styled.TouchableOpacity`
   height: 60px;

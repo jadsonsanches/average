@@ -89,6 +89,7 @@ export default function Asset() {
             setModalVisible(!modalVisible);
           }}
         >
+          <SafeAreaView style={{ backgroundColor: '#ffffff' }}></SafeAreaView>
           <HeaderModal>
             <BtnBack
               onPress={() => {

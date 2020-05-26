@@ -119,6 +119,7 @@ export default function Calculate() {
             setModalVisible(!modalVisible);
           }}
         >
+          <SafeAreaView style={{ backgroundColor: '#ffffff' }}></SafeAreaView>
           <HeaderModal>
             <BtnBack
               onPress={() => {

@@ -27,23 +27,6 @@ export default function SignIn({ navigation }) {
 
   async function handleLogin() {
       login(email, password);
-
-      // await firebase
-      //   .firestore()
-      //   .collection('users')
-      //   .where('user_id', '==', currentUser.uid)
-      //   .get()
-      //   .then(snapshot => {
-      //     if (snapshot.empty) {
-      //       console.log('NO MATCHING DOCUMENTS');
-      //     }
-
-      //     snapshot.forEach(doc => {
-      //       //console.log(doc.id, '=>', doc.data());
-      //       //setUserStorage(doc.data());
-      //       navigation.push('Routes');
-      //     });
-      //   });
   }
 
   return (

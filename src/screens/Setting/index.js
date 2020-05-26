@@ -1,10 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react';
 import {
-  SafeAreaView,
   ScrollView,
   Modal,
   View,
   ActivityIndicator,
+  SafeAreaView,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
@@ -85,111 +85,109 @@ export default function Setting() {
 
   if (loading) {
     return (
-      <View>
-        <ActivityIndicator size="large" />;
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color="#999" />
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <Container>
-        <Breadcrumb Titulo="Configurações" />
+    <Container>
+      <Breadcrumb Titulo="Configurações" />
 
-        <Body>
-          <ScrollView>
-            <CardBody>
-              <BodyHeader>
+      <Body>
+        <ScrollView>
+          <CardBody>
+            <BodyHeader>
+              {photoUserAccount !== null ? (
+                <ImgUser source={{ uri: photoUserAccount }} />
+              ) : (
+                <ImgUser source={imgUser} />
+              )}
+            </BodyHeader>
+
+            <Group>
+              <Description>Nome</Description>
+              <Valor>{name}</Valor>
+            </Group>
+            <Group>
+              <Description>E-mail</Description>
+              <Valor>{userAccount.email}</Valor>
+            </Group>
+            <LastGroup>
+              <Description>WhatsApp</Description>
+              <Valor>{whatsapp}</Valor>
+            </LastGroup>
+          </CardBody>
+        </ScrollView>
+        <Button
+          labelButton={'EDITAR INFORMAÇÕES'}
+          type={'Primary'}
+          onPress={() => setModalVisible(true)}
+        />
+        <Space10></Space10>
+        <Button
+          labelButton={'SAIR DA CONTA'}
+          type={'LightBlack'}
+          onPress={() => signOut()}
+        />
+      </Body>
+
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={() => closeModal()}
+      >
+        <SafeAreaView style={{ backgroundColor: '#ffffff' }}></SafeAreaView>
+        <HeaderModal>
+          <BtnBack onPress={() => closeModal()}>
+            <Feather name="arrow-left-circle" size={25} color="#19DD89" />
+          </BtnBack>
+          <TitleModal>CADASTRAR NOVA CARTEIRA</TitleModal>
+        </HeaderModal>
+        <Container>
+          <Body style={styles.modal}>
+            <BodyHeader>
+              <ButtonFoto onPress={() => handleImg()}>
                 {photoUserAccount !== null ? (
                   <ImgUser source={{ uri: photoUserAccount }} />
                 ) : (
                   <ImgUser source={imgUser} />
                 )}
-              </BodyHeader>
+              </ButtonFoto>
+            </BodyHeader>
+            <InputIcon
+              label={'Nome'}
+              nameIcon={'user'}
+              colorIcon={'#19DD89'}
+              placeholderInput={'Informe seu nome'}
+              selectionColor={'#19DD89'}
+              value={name}
+              onChangeText={name => setName(name)}
+              message={messageName}
+            />
+            <InputIcon
+              label={'WhatsApp'}
+              nameIcon={'phone'}
+              colorIcon={'#19DD89'}
+              placeholderInput={'(00) 90000.0000'}
+              keyboardType={'phone-pad'}
+              selectionColor={'#19DD89'}
+              secureTextEntry={false}
+              value={whatsapp}
+              onChangeText={whatsapp => setWhatsapp(whatsapp)}
+              maxLength={11}
+            />
 
-              <Group>
-                <Description>Nome</Description>
-                <Valor>{name}</Valor>
-              </Group>
-              <Group>
-                <Description>E-mail</Description>
-                <Valor>{userAccount.email}</Valor>
-              </Group>
-              <LastGroup>
-                <Description>WhatsApp</Description>
-                <Valor>{whatsapp}</Valor>
-              </LastGroup>
-            </CardBody>
-          </ScrollView>
-          <Button
-            labelButton={'EDITAR INFORMAÇÕES'}
-            type={'Primary'}
-            onPress={() => setModalVisible(true)}
-          />
-          <Space10></Space10>
-          <Button
-            labelButton={'SAIR DA CONTA'}
-            type={'LightBlack'}
-            onPress={() => signOut()}
-          />
-        </Body>
-
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={modalVisible}
-          onRequestClose={() => closeModal()}
-        >
-          <HeaderModal>
-            <BtnBack onPress={() => closeModal()}>
-              <Feather name="arrow-left-circle" size={25} color="#19DD89" />
-            </BtnBack>
-            <TitleModal>CADASTRAR NOVA CARTEIRA</TitleModal>
-          </HeaderModal>
-          <Container>
-            <Body style={styles.modal}>
-              <BodyHeader>
-                <ButtonFoto onPress={() => handleImg()}>
-                  {photoUserAccount !== null ? (
-                    <ImgUser source={{ uri: photoUserAccount }} />
-                  ) : (
-                    <ImgUser source={imgUser} />
-                  )}
-                </ButtonFoto>
-              </BodyHeader>
-              <InputIcon
-                label={'Nome'}
-                nameIcon={'user'}
-                colorIcon={'#19DD89'}
-                placeholderInput={'Informe seu nome'}
-                selectionColor={'#19DD89'}
-                value={name}
-                onChangeText={name => setName(name)}
-                message={messageName}
-              />
-              <InputIcon
-                label={'WhatsApp'}
-                nameIcon={'phone'}
-                colorIcon={'#19DD89'}
-                placeholderInput={'(00) 90000.0000'}
-                keyboardType={'phone-pad'}
-                selectionColor={'#19DD89'}
-                secureTextEntry={false}
-                value={whatsapp}
-                onChangeText={whatsapp => setWhatsapp(whatsapp)}
-                maxLength={11}
-                message={''}
-              />
-
-              <Button
-                labelButton={'SALVAR'}
-                type={'Primary'}
-                onPress={() => handleBtnSalvar()}
-              />
-            </Body>
-          </Container>
-        </Modal>
-      </Container>
-    </SafeAreaView>
+            <Button
+              labelButton={'SALVAR'}
+              type={'Primary'}
+              onPress={() => handleBtnSalvar()}
+            />
+          </Body>
+        </Container>
+      </Modal>
+    </Container>
   );
 }

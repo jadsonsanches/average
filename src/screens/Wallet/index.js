@@ -82,6 +82,7 @@ export default function Wallet() {
           setModalVisible(!modalVisible);
         }}
       >
+        <SafeAreaView style={{ backgroundColor: '#ffffff' }}></SafeAreaView>
         <HeaderModal>
           <BtnBack
             onPress={() => {
