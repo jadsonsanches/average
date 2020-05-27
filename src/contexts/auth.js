@@ -153,7 +153,7 @@ export function AuthProvider({ children }) {
         .get()
         .then(res => {
           setUserAccount(res.data());
-        });
+        })
 
       setLoading(false);
     } catch (error) {

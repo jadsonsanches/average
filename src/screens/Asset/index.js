@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
-import { FlatList, Modal, SafeAreaView } from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { FlatList, Modal, SafeAreaView, Picker } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+
+import AuthContext from '../../contexts/auth';
+import WalletAssetsContext from '../../contexts/walletAssets';
 
 import imgAsset from '../../assets/img/average-icon.png';
 
 import InputIcon from '../../components/Input';
+import PickerIcon from '../../components/Picker';
 import Breadcrumb from '../../components/Breadcrumb';
 import Button from '../../components/Button';
 import styles from './styles';
@@ -32,7 +36,29 @@ import {
 } from './styles';
 
 export default function Asset() {
-  const [modalVisible, setModalVisible] = useState(false);
+  const { userAccount } = useContext(AuthContext);
+  const {
+    loading,
+    wallets,
+    walletSelect,
+    totalValue,
+    result,
+    variation,
+    modalVisible,
+    modalWalletVisible,
+    name,
+    setName,
+    messageName,
+    setModalVisible,
+    setModalWalletVisible,
+    handleBtnSalvar,
+    handleClickWallet,
+    handleClickTrash,
+    closeModal
+  } = useContext(WalletAssetsContext);
+
+  //const [modalVisible, setModalVisible] = useState(false);
+  //const [walletSelect, setWalletSelect] = useState('')
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -102,19 +128,25 @@ export default function Asset() {
           </HeaderModal>
           <Container>
             <Body style={styles.modal}>
-              <InputIcon
-                label={'Instituição Financeira:'}
-                nameIcon={'shield'}
+              <PickerIcon
+                label={'Carteira:'}
+                nameIcon={'folder'}
                 colorIcon={'#19DD89'}
-                placeholderInput={'Informe o nome da instuição financeira'}
-                selectionColor={'#19DD89'}
-              />
+                selectedValue={walletSelect}
+                onValueChange={walletSelect => setWalletSelect(walletSelect)}
+                message={''}
+              >
+                {wallets.map((item, index) => {
+                  return <Picker.Item label={item.description} value={index} key={index} />;
+                })}
+              </PickerIcon>
               <InputIcon
                 label={'Ativo:'}
                 nameIcon={'file'}
                 colorIcon={'#19DD89'}
                 placeholderInput={'Informe o ativo'}
                 selectionColor={'#19DD89'}
+                message={''}
               />
               <ViewHalf>
                 <Half>
@@ -125,6 +157,7 @@ export default function Asset() {
                     placeholderInput={'100'}
                     selectionColor={'#19DD89'}
                     keyboardType={'number-pad'}
+                    message={''}
                   />
                 </Half>
                 <LastHalf>
@@ -135,6 +168,7 @@ export default function Asset() {
                     placeholderInput={'R$ 0,00'}
                     selectionColor={'#19DD89'}
                     keyboardType={'number-pad'}
+                    message={''}
                   />
                 </LastHalf>
               </ViewHalf>
@@ -148,6 +182,7 @@ export default function Asset() {
                     selectionColor={'#19DD89'}
                     keyboardType={'number-pad'}
                     maxLength={10}
+                    message={''}
                   />
                 </Half>
                 <LastHalf>
@@ -158,6 +193,7 @@ export default function Asset() {
                     placeholderInput={'R$ 0,00'}
                     selectionColor={'#19DD89'}
                     keyboardType={'number-pad'}
+                    message={''}
                   />
                 </LastHalf>
               </ViewHalf>

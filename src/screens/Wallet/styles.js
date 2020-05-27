@@ -92,6 +92,14 @@ export const BtnBack = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
 `;
+export const BtnDelete = styled.TouchableOpacity`
+  height: 60px;
+  width: 50px;
+  position: absolute;
+  right: 15px;
+  align-items: center;
+  justify-content: center;
+`;
 export const TitleModal = styled.Text`
   color: ${GlobalStyle.dark_gray};
   font-size: 17px;
