@@ -23,7 +23,6 @@ export function WalletAssetsProvider({ children }) {
   const [result, setResult] = useState('0.00K');
   const [variation, setVariation] = useState('0.00');
 
-
   let ArrayWallet = [];
   let dataWallet = {};
 
@@ -65,6 +64,7 @@ export function WalletAssetsProvider({ children }) {
       }
 
       dataWallet = {
+        id: userAccount.user_id + Math.floor(Math.random() * 1000),
         description: name,
         total: '0,00',
         user_id: userAccount.user_id,
@@ -80,7 +80,7 @@ export function WalletAssetsProvider({ children }) {
 
       setWallets([...wallets, dataWallet]);
 
-      Alert.alert('Sucesso', 'Foto atualizada com sucesso!');
+      //Alert.alert('Sucesso', 'Foto atualizada com sucesso!');
 
       setLoading(false);
 
@@ -140,8 +140,41 @@ export function WalletAssetsProvider({ children }) {
   }
 
   // FUNÇÃO PARA DELETAR WALLET SELECIONADA
-  async function deleteWallet(){
+  async function deleteWallet() {
+    try {
+      setLoading(true);
 
+      const wall = await firebase
+        .firestore()
+        .collection('wallets')
+        .where('id', '==', walletSelect.id)
+        .get();
+
+      if (wall.empty) {
+        Alert.alert(
+          'Detectamos um problema',
+          'Por favor tente novamente mais tarde ou entre em contato conosco.',
+        );
+        return;
+      }
+
+      wall.forEach(doc => {
+        async function deleteDoc() {
+          await firebase.firestore().collection('wallets').doc(doc.id).delete();
+        }
+
+        deleteDoc();
+
+        setWallets(wallets.filter(wall => wall.id !== doc.data().id));
+      });
+
+      setLoading(false);
+      closeModal();
+    } catch (error) {
+      console.log(`CODE: ${error.code} | MESSAGE: ${error.message}`);
+      setLoading(false);
+      handleError(error);
+    }
   }
 
   return (
@@ -151,6 +184,7 @@ export function WalletAssetsProvider({ children }) {
           loading,
           wallets,
           walletSelect,
+          setWalletSelect,
           totalValue,
           result,
           variation,
@@ -164,7 +198,7 @@ export function WalletAssetsProvider({ children }) {
           handleBtnSalvar,
           handleClickWallet,
           handleClickTrash,
-          closeModal
+          closeModal,
         }}
       >
         {children}

@@ -41,6 +41,7 @@ export default function Asset() {
     loading,
     wallets,
     walletSelect,
+    setWalletSelect,
     totalValue,
     result,
     variation,
